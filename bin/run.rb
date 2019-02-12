@@ -5,12 +5,12 @@ require 'tty-table'
 
 
 puts "Welcome to the Game of Thrones character quiz. Take this quiz to see which character you are!"
+sleep(1)
 
 
-def user_check(username)
-	User.find_or_create_by(name: username)
-end
-
+#----------------------------------------------------------------------------#
+#---------------------------- Ascii------------------------------------------#
+#----------------------------------------------------------------------------#
 def welcome_screen
 	puts "           ____ _____  _____ ___ ___     ____  / __/
                     / __ `/ __ `/ __ `__ \/ _ \   / __ \/ /_
@@ -29,8 +29,43 @@ def welcome_screen
      / /__/ / / / /_/ / /  / /_/ / /__/ /_/  __/ /     / /_/ / /_/ / / / /_
      \___/_/ /_/\__,_/_/   \__,_/\___/\__/\___/_/      \__, /\__,_/_/ /___/
                                                          /_/               "
-	sleep(3)
+	sleep(2)
 	system "clear"
+end
+#----------------------------------------------------------------------------#
+#---------------------------- Ascii------------------------------------------#
+#----------------------------------------------------------------------------#
+
+
+
+
+#----------------------------------------------------------------------------#
+#---------------------------- Main Menu--------------------------------------#
+#----------------------------------------------------------------------------#
+def main_menu(user)
+	prompt.select("Choose something") do |menu|
+		menu.choice 'Take The quiz!', -> {question1(user)}
+		menu.choice 'View The List Of All Characters', -> {character_list}
+		menu.choice 'View Your Quiz history', -> {quiz_history(user)}
+		menu.choice 'Update User-Name', -> {update_user(user)}
+		menu.choice 'Delete Quiz history', -> {delete_user_history(user)}
+		menu.choice 'Exit', -> {exit_app}
+	end
+	main_menu(user)
+end
+#----------------------------------------------------------------------------#
+#---------------------------- Main Menu--------------------------------------#
+#----------------------------------------------------------------------------#
+
+
+
+
+#----------------------------------------------------------------------------#
+#-------------------------Helper Methods--------------------------------------#
+#----------------------------------------------------------------------------#
+
+def user_check(username)
+	User.find_or_create_by(name: username)
 end
 
 def prompt
@@ -44,35 +79,25 @@ def create_user
 	user = User.create(name: name)
 	main_menu(user)
 end
-#------------------------------Main-Menu---------------------------------------
-def main_menu(user)
-	prompt = TTY::Prompt.new
-	prompt.select("Choose something") do |menu|
-		menu.choice 'Take The quiz!', -> {question1(user)}
-		menu.choice 'View The List Of All Characters', -> {character_list}
-		menu.choice 'View Your Quiz history', -> {quiz_history(user)}
-		menu.choice 'Update User-Name', -> {update_user(user)}
-		menu.choice 'Delete Quiz history', -> {delete_user_history(user)}
-		menu.choice 'Exit', -> {exit_app}
-	end
-	main_menu(user)
-end
-#------------------------------Methods---------------------------------------
+
 def character_list
 	GotCharacter.all.each do |character|
 		puts character.name
 	end
 end
 
-def exit_app
-	exit
+def quiz_history(user)
+	user.tests
+	user.tests.each do |test|
+		puts test.score
+	end
 end
 
 def update_user(user)
 	puts "Please type in your new username"
 	answer = gets.chomp
-	User.update(user.id, :name => name, :name => answer)
-	puts "Your new user-name is #{answer}"
+	User.update(user.id, :name => user, :name => answer)
+	puts "Your new username is #{answer}."
 end
 
 def delete_user_history(user)
@@ -81,20 +106,30 @@ def delete_user_history(user)
 	user.tests.clear
 end
 
-def quiz_history(user)
-	#binding.pry
-	user.tests
-	user.tests.each do |test|
-		puts test.score
+def display_character_match(user)
+	result = GotCharacter.all.find do |character|
+		user.tests.last.score > character.min_score && user.tests.last.score < character.max_score
 	end
+	puts "You are #{result.name}!"
+	puts ""
+	sleep(2)
 end
 
-def display_character_match(user, new_test)
-	main_menu(user)
+def exit_app
+	exit
 end
 
+#----------------------------------------------------------------------------#
+#-------------------------Helper Methods--------------------------------------#
+#----------------------------------------------------------------------------#
 
-#----------------------questions----------------------------------------------
+
+
+
+
+#----------------------------------------------------------------------------#
+#---------------------------- Questions--------------------------------------#
+#----------------------------------------------------------------------------#
 def question1(user)
 	new_test = Test.create(user_id: user.id, character_id: nil, score: 0)
 	user.tests << new_test
@@ -138,12 +173,77 @@ def question4(user, new_test)
 		menu.choice 'Human', -> {new_test.score += 10}
 	end
 	new_test.save
-	#question5(user, new_test)
-	display_character_match(user, new_test)
+	question5(user, new_test)
+end
+def question5(user, new_test)
+	prompt.select("What is the greatest threat to Westeros?") do |menu|
+		menu.choice 'White walkers', -> {new_test.score += 0}
+		menu.choice 'The Targaryens/Dragons', -> {new_test.score += 10}
+		menu.choice 'The Lannisters', -> {new_test.score += 5}
+		menu.choice 'Climate Change', -> {new_test.score += 3}
+	end
+	new_test.save
+	question6(user, new_test)
 end
 
+def question6(user, new_test)
+	prompt.select("What would you rather do:") do |menu|
+		menu.choice 'Take the black', -> {new_test.score += 3}
+		menu.choice 'Save the kingdom but sacrifice yourself', -> {new_test.score += 1}
+		menu.choice 'Be Gregor Clegane', -> {new_test.score += 10}
+		menu.choice 'Bend the knee and dishonor yourself and your house', -> {new_test.score += 4}
+	end
+	new_test.save
+	question7(user, new_test)
+end
 
-#----------------------questions-----------------------------------------------
+def question7(user, new_test)
+	prompt.select("You're travling to a distant land with a group and decide to set up camp. Quickly you realize that there's not enough food for everyone, what do you do?") do |menu|
+		menu.choice "Kill everyone else and eat to your heart's content", -> {new_test.score += 10}
+		menu.choice 'Suggest a free for all to determine who gets fed', -> {new_test.score += 8}
+		menu.choice 'Make sure everyone else is fed before you take anything', -> {new_test.score += 0}
+		menu.choice 'Evenly distribute the food', -> {new_test.score += 2}
+	end
+	new_test.save
+	question8(user, new_test)
+end
+
+def question8(user, new_test)
+	prompt.select("You're on the Kingsroad and you come across an injured person that's unconcious. What do you do?") do |menu|
+		menu.choice 'Kill them to ease their suffering', -> {new_test.score += 9}
+		menu.choice 'Ignore them and keep moving', -> {new_test.score += 8}
+		menu.choice 'Do your best to heal them', -> {new_test.score += 3}
+		menu.choice 'Take them to the nearest town to get help', -> {new_test.score += 1}
+	end
+	new_test.save
+	question9(user, new_test)
+end
+
+def question9(user, new_test)
+	prompt.select("You're surrounded by an army far superior to yours and the enemy general is asking for you to surrender. What will you do?") do |menu|
+		menu.choice 'Fight to the last man', -> {new_test.score += 1}
+		menu.choice 'Run away', -> {new_test.score += 6}
+		menu.choice 'Surrender and hope for the best', -> {new_test.score += 3}
+		menu.choice 'Pretend to negotiate but attempt an assassination', -> {new_test.score += 9}
+	end
+	new_test.save
+	question10(user, new_test)
+end
+
+def question10(user, new_test)
+	prompt.select("Your lord of your house dies unexpectadly and there is no heir. What do you do?") do |menu|
+		menu.choice 'Get rid of all competition', -> {new_test.score += 10}
+		menu.choice 'Work to place a lord that is easy to manipulate', -> {new_test.score += 8}
+		menu.choice 'Arrange a vote', -> {new_test.score += 0}
+		menu.choice 'Arrange a tournament', -> {new_test.score += 3}
+	end
+	new_test.save
+	display_character_match(user)
+end
+
+#----------------------------------------------------------------------------#
+#---------------------------- Questions--------------------------------------#
+#----------------------------------------------------------------------------#
 
 welcome_screen
 create_user
