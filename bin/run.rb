@@ -29,8 +29,12 @@ def welcome_screen
      / /__/ / / / /_/ / /  / /_/ / /__/ /_/  __/ /     / /_/ / /_/ / / / /_
      \___/_/ /_/\__,_/_/   \__,_/\___/\__/\___/_/      \__, /\__,_/_/ /___/
                                                          /_/               "
-	sleep(4)
+	sleep(3)
 	system "clear"
+end
+
+def prompt
+	TTY::Prompt.new
 end
 
 def create_user
@@ -44,12 +48,14 @@ end
 def main_menu(user)
 	prompt = TTY::Prompt.new
 	prompt.select("Choose something") do |menu|
-		menu.choice 'View the list of all characters', -> {character_list}
-		menu.choice 'Update User-Name', -> {update_user}
-		menu.choice 'Delete User', -> {delete_user(user)}
+		menu.choice 'Take The quiz!', -> {question1(user)}
+		menu.choice 'View The List Of All Characters', -> {character_list}
+		menu.choice 'View Your Quiz history', -> {quiz_history(user)}
+		menu.choice 'Update User-Name', -> {update_user(user)}
+		menu.choice 'Delete Quiz history', -> {delete_user_history(user)}
 		menu.choice 'Exit', -> {exit_app}
 	end
-	main_menu
+	main_menu(user)
 end
 #------------------------------Methods---------------------------------------
 def character_list
@@ -62,17 +68,45 @@ def exit_app
 	exit
 end
 
-def update_user
+def update_user(user)
+	puts "Please type in your new username"
+	answer = gets.chomp
+	User.update(user.id, :name => name, :name => answer)
+	puts "Your new user-name is #{answer}"
 end
 
-def delete_user(user)
-	User.where(id: user.id).destroy(user.tests)
-	puts 'User has been deleted!!'
-	binding.pry
-	sleep(2)
-	system 'clear'
+def delete_user_history(user)
+	Test.where(user_id: user.id).destroy_all
+	puts 'Your history has been deleted!!'
+	user.tests.clear
 end
-----------------------questions----------------------------------------------
+
+def quiz_history(user)
+	#binding.pry
+	user.tests
+	user.tests.each do |test|
+		puts test.score
+	end
+end
+
+def display_character_match(user, new_test)
+	main_menu(user)
+end
+
+
+#----------------------questions----------------------------------------------
+def question1(user)
+	new_test = Test.create(user_id: user.id, character_id: nil, score: 0)
+	user.tests << new_test
+	prompt.select("What is your goal in life?") do |menu|
+		 menu.choice 'My goal is to protect the world and those closest to me', -> {new_test.score += 0}
+		 menu.choice 'I want to get rich or die trying', -> {new_test.score += 3}
+		 menu.choice "I don't care", -> {new_test.score += 5}
+		 menu.choice 'I want to watch the world burn', -> {new_test.score += 10}
+	end
+	new_test.save
+	question2(user, new_test)
+end
 
 def question2(user, new_test)
 	prompt.select("What kind of person are you") do |menu|
@@ -104,11 +138,12 @@ def question4(user, new_test)
 		menu.choice 'Human', -> {new_test.score += 10}
 	end
 	new_test.save
-	question5(user, new_test)
+	#question5(user, new_test)
+	display_character_match(user, new_test)
 end
 
 
-----------------------questions-----------------------------------------------
+#----------------------questions-----------------------------------------------
 
 welcome_screen
 create_user
