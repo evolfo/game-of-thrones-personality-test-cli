@@ -12,6 +12,7 @@ sleep(1)
 #---------------------------- Ascii------------------------------------------#
 #----------------------------------------------------------------------------#
 def welcome_screen
+	music = fork{ exec 'afplay', "./sounds/GOT_theme_song.mp3"}
 	puts "           ____ _____  _____ ___ ___     ____  / __/
                     / __ `/ __ `/ __ `__ \/ _ \   / __ \/ /_
                    / /_/ / /_/ / / / / / /  __/  / /_/ / __/
@@ -88,14 +89,9 @@ def character_list
 end
 
 def quiz_history(user)
-	user.tests
-	info = user.tests.each do |test|
-		puts test.score
-		display_character_match(user)
+	user.tests.each_with_index do |test, i|
+		puts "#{i+1}. Your character was #{test.got_character.name}"
 	end
-	# GotCharacter.all.find do |character|
-	# 	puts character.name
-	# end
 end
 
 def update_user(user)
@@ -115,6 +111,9 @@ def display_character_match(user)
 	result = GotCharacter.all.find do |character|
 		user.tests.last.score >= character.min_score && user.tests.last.score <= character.max_score
 	end
+	current_test = user.tests.last
+	current_test.got_character_id = result.id
+	current_test.save
 	puts "You are #{result.name}!"
 	sleep(2)
 end
