@@ -1,5 +1,6 @@
 require_relative '../config/environment'
 require_relative '../lib/character.rb'
+require_relative '../lib/description_scrape.rb'
 require 'tty-prompt'
 require 'tty-table'
 
@@ -12,7 +13,7 @@ sleep(1)
 #---------------------------- Ascii------------------------------------------#
 #----------------------------------------------------------------------------#
 def welcome_screen
-	music = fork{ exec 'afplay', "./sounds/GOT_theme_song.mp3"}
+	#music = fork{ exec 'afplay', "./sounds/GOT_theme_song.mp3"}
 	puts "           ____ _____  _____ ___ ___     ____  / __/
                     / __ `/ __ `/ __ `__ \/ _ \   / __ \/ /_
                    / /_/ / /_/ / / / / / /  __/  / /_/ / __/
@@ -116,6 +117,10 @@ def display_character_match(user)
 	current_test.save
 	puts "You are #{result.name}!"
 	sleep(2)
+end
+
+def happy_goodbye
+	`say "Valar morgulhis, You finished fuckface!"`
 end
 
 def exit_app
@@ -246,6 +251,7 @@ def question10(user, new_test)
 	end
 	new_test.save
 	display_character_match(user)
+	happy_goodbye
 end
 
 #----------------------------------------------------------------------------#
