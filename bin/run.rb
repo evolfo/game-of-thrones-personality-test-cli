@@ -28,7 +28,8 @@ def welcome_screen
       / ___/ __ \/ __ `/ ___/ __ `/ ___/ __/ _ \/ ___/  / __ `/ / / / /_  /
      / /__/ / / / /_/ / /  / /_/ / /__/ /_/  __/ /     / /_/ / /_/ / / / /_
      \___/_/ /_/\__,_/_/   \__,_/\___/\__/\___/_/      \__, /\__,_/_/ /___/
-                                                         /_/               "
+                                                         /_/
+	"
 	sleep(2)
 	system "clear"
 end
@@ -44,7 +45,7 @@ end
 #----------------------------------------------------------------------------#
 def main_menu(user)
 	prompt.select("Choose something") do |menu|
-		menu.choice 'Take The quiz!', -> {question1(user)}
+		menu.choice 'Take The Quiz!', -> {question1(user)}
 		menu.choice 'View The List Of All Characters', -> {character_list}
 		menu.choice 'View Your Quiz history', -> {quiz_history(user)}
 		menu.choice 'Update User-Name', -> {update_user(user)}
@@ -88,9 +89,13 @@ end
 
 def quiz_history(user)
 	user.tests
-	user.tests.each do |test|
+	info = user.tests.each do |test|
 		puts test.score
+		display_character_match(user)
 	end
+	# GotCharacter.all.find do |character|
+	# 	puts character.name
+	# end
 end
 
 def update_user(user)
@@ -108,10 +113,9 @@ end
 
 def display_character_match(user)
 	result = GotCharacter.all.find do |character|
-		user.tests.last.score > character.min_score && user.tests.last.score < character.max_score
+		user.tests.last.score >= character.min_score && user.tests.last.score <= character.max_score
 	end
 	puts "You are #{result.name}!"
-	puts ""
 	sleep(2)
 end
 
@@ -131,7 +135,7 @@ end
 #---------------------------- Questions--------------------------------------#
 #----------------------------------------------------------------------------#
 def question1(user)
-	new_test = Test.create(user_id: user.id, character_id: nil, score: 0)
+	new_test = Test.create(user_id: user.id, got_character_id: 0, score: 0)
 	user.tests << new_test
 	prompt.select("What is your goal in life?") do |menu|
 		 menu.choice 'My goal is to protect the world and those closest to me', -> {new_test.score += 0}
@@ -198,7 +202,8 @@ def question6(user, new_test)
 end
 
 def question7(user, new_test)
-	prompt.select("You're travling to a distant land with a group and decide to set up camp. Quickly you realize that there's not enough food for everyone, what do you do?") do |menu|
+	puts "You're traveling to a distant land with a group and decide to set up camp. Quickly you realize that there's not enough food for everyone, what do you do?"
+	prompt.select("") do |menu|
 		menu.choice "Kill everyone else and eat to your heart's content", -> {new_test.score += 10}
 		menu.choice 'Suggest a free for all to determine who gets fed', -> {new_test.score += 8}
 		menu.choice 'Make sure everyone else is fed before you take anything', -> {new_test.score += 0}
@@ -209,7 +214,8 @@ def question7(user, new_test)
 end
 
 def question8(user, new_test)
-	prompt.select("You're on the Kingsroad and you come across an injured person that's unconcious. What do you do?") do |menu|
+	puts "You're on the Kingsroad and you come across an injured person that's unconcious. What do you do?"
+	prompt.select("") do |menu|
 		menu.choice 'Kill them to ease their suffering', -> {new_test.score += 9}
 		menu.choice 'Ignore them and keep moving', -> {new_test.score += 8}
 		menu.choice 'Do your best to heal them', -> {new_test.score += 3}
@@ -220,7 +226,8 @@ def question8(user, new_test)
 end
 
 def question9(user, new_test)
-	prompt.select("You're surrounded by an army far superior to yours and the enemy general is asking for you to surrender. What will you do?") do |menu|
+	puts "You're surrounded by an army far superior to yours and the enemy general is asking for you to surrender. What will you do?"
+	prompt.select("") do |menu|
 		menu.choice 'Fight to the last man', -> {new_test.score += 1}
 		menu.choice 'Run away', -> {new_test.score += 6}
 		menu.choice 'Surrender and hope for the best', -> {new_test.score += 3}
@@ -231,7 +238,8 @@ def question9(user, new_test)
 end
 
 def question10(user, new_test)
-	prompt.select("Your lord of your house dies unexpectadly and there is no heir. What do you do?") do |menu|
+	puts "Your lord of your house dies unexpectdely and there is no heir. What do you do?"
+	prompt.select("") do |menu|
 		menu.choice 'Get rid of all competition', -> {new_test.score += 10}
 		menu.choice 'Work to place a lord that is easy to manipulate', -> {new_test.score += 8}
 		menu.choice 'Arrange a vote', -> {new_test.score += 0}
