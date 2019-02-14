@@ -87,8 +87,6 @@ def character_list
 	GotCharacter.all.each do |character|
 		puts character.name
 	end
-
-
 end
 
 def quiz_history(user)
@@ -125,7 +123,7 @@ def display_character_match(user)
 end
 
 def happy_goodbye
-	`say "Valar morghoulis, You finished it. Fuck you"`
+	`say "Valar morghoulis, You finished it."`
 end
 
 def exit_app
