@@ -13,7 +13,7 @@ sleep(1)
 #---------------------------- Ascii------------------------------------------#
 #----------------------------------------------------------------------------#
 def welcome_screen
-	#music = fork{ exec 'afplay', "./sounds/GOT_theme_song.mp3"}
+	music = fork{ exec 'afplay', "./sounds/GOT_theme_song.mp3"}
 	puts "           ____ _____  _____ ___ ___     ____  / __/
                     / __ `/ __ `/ __ `__ \/ _ \   / __ \/ /_
                    / /_/ / /_/ / / / / / /  __/  / /_/ / __/
@@ -67,8 +67,8 @@ end
 #-------------------------Helper Methods--------------------------------------#
 #----------------------------------------------------------------------------#
 
-def user_check(username)
-	User.find_or_create_by(name: username)
+def user_check(name)
+	User.find_or_create_by(name: name)
 end
 
 def prompt
@@ -79,7 +79,7 @@ def create_user
 	puts "Please enter your name:"
 	name = gets.chomp
 	user = user_check(name)
-	user = User.create(name: name)
+	#user = User.create(name: name)
 	main_menu(user)
 end
 
@@ -87,6 +87,8 @@ def character_list
 	GotCharacter.all.each do |character|
 		puts character.name
 	end
+
+
 end
 
 def quiz_history(user)
@@ -116,14 +118,18 @@ def display_character_match(user)
 	current_test.got_character_id = result.id
 	current_test.save
 	puts "You are #{result.name}!"
+	if user.tests.last.score > 61
+		`say "You evil fuck"`
+	end
 	sleep(2)
 end
 
 def happy_goodbye
-	`say "Valar morgulhis, You finished fuckface!"`
+	`say "Valar morghoulis, You finished it. Fuck you"`
 end
 
 def exit_app
+	fork{ exec "killall", "afplay"}
 	exit
 end
 
@@ -251,7 +257,7 @@ def question10(user, new_test)
 	end
 	new_test.save
 	display_character_match(user)
-	happy_goodbye
+	#happy_goodbye
 end
 
 #----------------------------------------------------------------------------#

@@ -41,3 +41,5 @@ GotCharacter.create(name: cersei[0]["name"], min_score: 81, max_score: 85)
 GotCharacter.create(name: gregor[0]["name"], min_score: 86, max_score: 90)
 GotCharacter.create(name: joffrey[0]["name"], min_score: 91, max_score: 95)
 GotCharacter.create(name: ramsay[0]["name"], min_score: 96, max_score: 100)
+ evil_charatcers = [melisandre, varys, tywin, littlefinger, cersei, gregor, joffrey,
+ ramsay]
