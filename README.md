@@ -31,10 +31,22 @@ Clone this repository and then in your terminal type:
 bundle install
 ```
 
-and then
+to install the required gems
+
+```
+rake db:migrate
+```
+
+to create the tables in the database
+
+```
+rake db:seed
+```
+
+to seed the database with the characters. Finally, run the program:
 
 ```
 ruby bin/run.rb
 ```
 
-## 
+and enjoy!
