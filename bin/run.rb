@@ -3,10 +3,8 @@ require_relative '../lib/character.rb'
 require_relative '../lib/description_scrape.rb'
 require 'tty-prompt'
 require 'tty-table'
+require 'tty'
 
-
-puts "Welcome to the Game of Thrones character quiz. Take this quiz to see which character you are!"
-sleep(1)
 
 
 #----------------------------------------------------------------------------#
@@ -14,24 +12,27 @@ sleep(1)
 #----------------------------------------------------------------------------#
 def welcome_screen
 	music = fork{ exec 'afplay', "./sounds/GOT_theme_song.mp3"}
-	puts "           ____ _____  _____ ___ ___     ____  / __/
-                    / __ `/ __ `/ __ `__ \/ _ \   / __ \/ /_
-                   / /_/ / /_/ / / / / / /  __/  / /_/ / __/
-                   \__, /\__,_/_/ /_/ /_/\___/   \____/_/
-                  /____/
-                       __  __
-                      / /_/ /_  _________  ____  ___  _____
-                     / __/ __ \/ ___/ __ \/ __ \/ _ \/ ___/
-                    / /_/ / / / /  / /_/ / / / /  __(__  )
-                    \__/_/ /_/_/   \____/_/ /_/\___/____/
+	# puts "           ____ _____  _____ ___ ___     ____  / __/
+    #                 / __ `/ __ `/ __ `__ \/ _ \   / __ \/ /_
+    #                / /_/ / /_/ / / / / / /  __/  / /_/ / __/
+    #                \__, /\__,_/_/ /_/ /_/\___/   \____/_/
+    #               /____/
+    #                    __  __
+    #                   / /_/ /_  _________  ____  ___  _____
+    #                  / __/ __ \/ ___/ __ \/ __ \/ _ \/ ___/
+    #                 / /_/ / / / /  / /_/ / / / /  __(__  )
+    #                 \__/_/ /_/_/   \____/_/ /_/\___/____/
+	#
+    #          __                          __                           _
+    #    _____/ /_  ____ __________ ______/ /____  _____   ____ ___  __(_)___
+    #   / ___/ __ \/ __ `/ ___/ __ `/ ___/ __/ _ \/ ___/  / __ `/ / / / /_  /
+    #  / /__/ / / / /_/ / /  / /_/ / /__/ /_/  __/ /     / /_/ / /_/ / / / /_
+    #  \___/_/ /_/\__,_/_/   \__,_/\___/\__/\___/_/      \__, /\__,_/_/ /___/
+    #                                                      /_/
+	# "
+	font = TTY::Font.new(:doom)
+	puts font.write("Game Of Thrones Quiz")
 
-             __                          __                           _
-       _____/ /_  ____ __________ ______/ /____  _____   ____ ___  __(_)___
-      / ___/ __ \/ __ `/ ___/ __ `/ ___/ __/ _ \/ ___/  / __ `/ / / / /_  /
-     / /__/ / / / /_/ / /  / /_/ / /__/ /_/  __/ /     / /_/ / /_/ / / / /_
-     \___/_/ /_/\__,_/_/   \__,_/\___/\__/\___/_/      \__, /\__,_/_/ /___/
-                                                         /_/
-	"
 	sleep(2)
 	system "clear"
 end
@@ -98,7 +99,7 @@ end
 def update_user(user)
 	puts "Please type in your new username"
 	answer = gets.chomp
-	User.update(user.id, :name => user, :name => answer)
+	User.update(user.id, :name => answer)
 	puts "Your new username is #{answer}."
 end
 
@@ -123,7 +124,7 @@ def display_character_match(user)
 end
 
 def happy_goodbye
-	`say "Valar morghoulis, You finished it."`
+	`say "You finished it. Fucker!"`
 end
 
 def exit_app
@@ -255,7 +256,7 @@ def question10(user, new_test)
 	end
 	new_test.save
 	display_character_match(user)
-	#happy_goodbye
+	happy_goodbye
 end
 
 #----------------------------------------------------------------------------#

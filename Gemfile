@@ -7,3 +7,6 @@ gem "pry"
 gem "require_all"
 gem 'game_of_thrones_api'
 gem 'tty'
+gem 'tty-font'
+gem 'pastel'
+gem 'nokogiri'
