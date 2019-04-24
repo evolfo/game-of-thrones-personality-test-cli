@@ -62,10 +62,11 @@ ruby bin/run.rb
 and enjoy!
 
 Built with: 
-* Ruby on Rails
-* Google Maps API
-* YouTube API
+* Ruby
+* TTY-Prompt
+* Nokogiri
+* A Song of Ice and Fire API
 
 Creators:
 * Angelo Spampinato (https://github.com/evolfo/)
-* Mazen Al Swar (https://github.com/andyrey7)
+* Andy Reyes (https://github.com/andyrey7)
