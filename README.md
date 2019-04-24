@@ -1,5 +1,7 @@
 # Game of Thrones Character Quiz
 
+![Login Page](https://i.imgur.com/UhoF3uM.png)
+
 Take our 10 question quiz and find out which Game of Thrones character you are! There are 20 possibilities:
 
 1. Brienne of Tarth
@@ -22,6 +24,14 @@ Take our 10 question quiz and find out which Game of Thrones character you are! 
 18. Gregor Clegane
 19. Margaery Tyrell
 20. Qyburn
+
+Quiz Complete Screen:
+
+![Picture](https://i.imgur.com/qkNCzIB.png)
+
+Character Detail Screen: 
+
+![Picture](https://i.imgur.com/4nLokdS.png)
 
 ## Installation Instructions
 
@@ -50,3 +60,12 @@ ruby bin/run.rb
 ```
 
 and enjoy!
+
+Built with: 
+* Ruby on Rails
+* Google Maps API
+* YouTube API
+
+Creators:
+* Angelo Spampinato (https://github.com/evolfo/)
+* Mazen Al Swar (https://github.com/andyrey7)
